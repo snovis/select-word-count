@@ -1,5 +1,6 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
+
 // Remember to rename these classes and interfaces!
 
 interface NovisPluginSettings {
@@ -9,6 +10,7 @@ interface NovisPluginSettings {
 const DEFAULT_SETTINGS: NovisPluginSettings = {
 	selectionOnly: true
 }
+
 
 function countWords(str: string) : number {
 	if (str.length === 0) {
@@ -27,17 +29,18 @@ export default class NovisPlugin extends Plugin {
 		await this.loadSettings();
 
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Select WordCount', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('flower', 'Select WordCount', (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-			console.log("NOVIS-SWC: User clicked the dice");
+			new Notice('Should Display Word Count!');
+			// const wc = countWords(editor.getSelection());
+			console.log("NOVIS-SWC: User clicked the flower");
 		});
 		// Perform additional things with the ribbon
 		ribbonIconEl.addClass('novis-plugin-ribbon-class');
 
 		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
 		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
+		statusBarItemEl.setText('NOVIS Plugin');
 
 		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
@@ -56,6 +59,8 @@ export default class NovisPlugin extends Plugin {
 				const wc = countWords(editor.getSelection());
 				console.log("NOVIS-SWC: Word Count: ", wc);
 				new NovisWCModal(this.app,wc).open();
+				navigator.clipboard.writeText("Word Count: " + wc.toString());
+				
 			}
 		});
 		// This adds a complex command that can check whether the current state of the app allows execution of the command

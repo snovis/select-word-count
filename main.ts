@@ -47,7 +47,7 @@ export default class NovisPlugin extends Plugin {
 				new NovisModal(this.app).open();
 			}
 		});
-		// This adds an editor command that can perform some operation on the current editor instance
+		// This adds an editor command to count the number of words in the selection.
 		this.addCommand({
 			id: 'count-words',
 			name: 'Count words',
@@ -55,7 +55,7 @@ export default class NovisPlugin extends Plugin {
 				console.log(editor.getSelection());
 				const wc = countWords(editor.getSelection());
 				console.log("NOVIS-SWC: Word Count: ", wc);
-				// editor.replaceSelection('Sample Editor Command');
+				new NovisWCModal(this.app,wc).open();
 			}
 		});
 		// This adds a complex command that can check whether the current state of the app allows execution of the command
@@ -101,6 +101,24 @@ export default class NovisPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+}
+
+class NovisWCModal extends Modal {
+	selectionWordCount = 0;
+	constructor(app: App, wordCount: number) {
+		super(app);
+		this.selectionWordCount = wordCount;
+	}
+
+	onOpen() {
+		const {contentEl} = this;
+		contentEl.setText('Selected Text Word Count: ' + this.selectionWordCount.toString());
+	}
+
+	onClose() {
+		const {contentEl} = this;
+		contentEl.empty();
 	}
 }
 

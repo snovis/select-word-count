@@ -3,11 +3,11 @@ import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Set
 // Remember to rename these classes and interfaces!
 
 interface MyPluginSettings {
-	mySetting: string;
+	selectionOnly: boolean;
 }
 
 const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
+	selectionOnly: true
 }
 
 export default class MyPlugin extends Plugin {
@@ -17,7 +17,7 @@ export default class MyPlugin extends Plugin {
 		await this.loadSettings();
 
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('dice', 'Select WordCount', (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
 			new Notice('This is a notice!');
 		});
@@ -120,18 +120,27 @@ class SampleSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
+		containerEl.createEl('h2', {text: 'Settings for select word count plugin.'});
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
+			.setName('Selection Only')
+			.setDesc('Count selection or whole document')
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.selectionOnly).onChange(async (value) => {
+					console.log("Selection only: " + value);
+					this.plugin.settings.selectionOnly = value;
+					await this.plugin.saveSettings();
+				})
+			);
+/*
+			.addText(text => text // this is the wrong type.
 				.setPlaceholder('Enter your secret')
 				.setValue(this.plugin.settings.mySetting)
 				.onChange(async (value) => {
-					console.log('Secret: ' + value);
+					console.log('One Off: ' + value);
 					this.plugin.settings.mySetting = value;
 					await this.plugin.saveSettings();
 				}));
+*/
 	}
 }
